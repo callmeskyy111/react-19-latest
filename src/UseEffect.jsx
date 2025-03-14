@@ -17,4 +17,5 @@ function UseEffect() {
     </div>
   );
 }
+
 export default UseEffect;
