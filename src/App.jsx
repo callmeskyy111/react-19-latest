@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import UseRef from "./UseRef";
+import React from "react";
+import Parent from "./Parent";
 
 function App() {
   return (
@@ -7,10 +7,10 @@ function App() {
       <h2>
         <i>App⚛️</i>
       </h2>
-      <UseRef />
+      <Parent />
     </div>
   );
 }
-//v-31
+//v-41
 
 export default App;

@@ -500,3 +500,225 @@ export default DynamicTable;
 | **Dynamic Columns** | When column names are unknown or may change |
 
 Using `.map()` makes React tables dynamic, scalable, and efficient! 🚀
+
+### **Uncontrolled Components in React**  
+Uncontrolled components are **form inputs (like `<input>`, `<textarea>`, `<select>`) that store their own state internally, instead of relying on React state**. In other words, React does **not** control their values. Instead, we access the current value using a **ref** (`useRef` in functional components or `createRef` in class components).  
+
+---
+
+## **🔹 Key Characteristics of Uncontrolled Components**  
+1. **State is managed by the DOM, not React.**  
+2. **We use `useRef` to access values.**  
+3. **No need for `onChange` handlers.**  
+4. **Useful for integrating with non-React code or third-party libraries.**
+
+---
+
+## **🔹 Example of an Uncontrolled Component**  
+```jsx
+import React, { useRef } from "react";
+
+function UncontrolledForm() {
+  const inputRef = useRef(null);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    alert(`User Input: ${inputRef.current.value}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Enter Name:
+        <input type="text" ref={inputRef} />
+      </label>
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+export default UncontrolledForm;
+```
+
+### **✅ Explanation:**
+- The `ref={inputRef}` allows direct access to the DOM element.
+- When the form is submitted, we retrieve the value using `inputRef.current.value`.
+
+---
+
+## **🔹 Controlled vs. Uncontrolled Components**
+| Feature            | Controlled Component       | Uncontrolled Component |
+|--------------------|--------------------------|------------------------|
+| **State Management** | Controlled by React state (`useState`) | Controlled by the DOM |
+| **Data Handling** | `value` and `onChange` handlers | Accessed using `ref` |
+| **Performance** | Might re-render on every change | No re-renders on input changes |
+| **Use Cases** | Dynamic updates, validation, controlled forms | Simple forms, third-party integrations |
+
+---
+
+## **🔹 When to Use Uncontrolled Components?**
+✔️ When using **third-party libraries** that interact directly with the DOM.  
+✔️ When **migrating legacy code** to React.  
+✔️ When handling **file uploads** (`<input type="file" />`).  
+✔️ When working with **large forms** where performance is a concern.  
+
+---
+
+## **🔹 Practical Example: File Upload with an Uncontrolled Component**
+```jsx
+import React, { useRef } from "react";
+
+function FileUpload() {
+  const fileInputRef = useRef(null);
+
+  const handleUpload = () => {
+    alert(`Selected File: ${fileInputRef.current.files[0].name}`);
+  };
+
+  return (
+    <div>
+      <input type="file" ref={fileInputRef} />
+      <button onClick={handleUpload}>Upload File</button>
+    </div>
+  );
+}
+
+export default FileUpload;
+```
+**✅ Explanation:**  
+- We access the selected file using `fileInputRef.current.files[0]`, without needing to store it in React state.
+
+---
+
+### **🔴 Downsides of Uncontrolled Components**
+❌ Harder to track and validate input values.  
+❌ Difficult to reset values dynamically.  
+❌ Not ideal for dynamic forms that need immediate UI updates.
+
+For most cases, **controlled components** (`useState`) are preferred, but **uncontrolled components** are useful in specific scenarios where direct DOM access is needed. 🚀
+
+# **Passing Functions as Props in React (Parent to Child & Child to Parent)**
+In React, we often need to **pass functions as props** to manage communication between components. This is a key concept in **parent-child communication**.
+
+---
+
+## **🔹 Why Pass Functions as Props?**
+1. **Allows child components to interact with parent state.**  
+2. **Facilitates event handling across components.**  
+3. **Improves component reusability and modularity.**  
+4. **Helps in state lifting (moving state to a common ancestor).**
+
+---
+
+## **🔹 Passing Functions as Props (Parent → Child)**
+A parent component **passes a function** to a child component as a prop. The child can then call this function.
+
+### **✅ Example: Updating Parent State from a Child Component**
+```jsx
+import React, { useState } from "react";
+import ChildComponent from "./ChildComponent";
+
+function ParentComponent() {
+  const [message, setMessage] = useState("Hello from Parent");
+
+  const updateMessage = () => {
+    setMessage("Message updated by Child!");
+  };
+
+  return (
+    <div>
+      <h1>{message}</h1>
+      <ChildComponent updateMessage={updateMessage} />
+    </div>
+  );
+}
+
+export default ParentComponent;
+```
+---
+```jsx
+// ChildComponent.js
+import React from "react";
+
+function ChildComponent({ updateMessage }) {
+  return (
+    <button onClick={updateMessage}>Update Parent Message</button>
+  );
+}
+
+export default ChildComponent;
+```
+
+### **✅ Explanation:**
+- The `ParentComponent` has a state variable `message`.
+- It passes the `updateMessage` function to `ChildComponent` as a prop.
+- When the child button is clicked, it calls `updateMessage()`, updating the parent’s state.
+
+---
+
+## **🔹 Passing Data from Child to Parent (Child → Parent)**
+Since data flows **top-down in React**, children cannot directly modify parent state. Instead, we **pass a function from parent to child** and **call it inside the child component with data as an argument**.
+
+### **✅ Example: Sending Data from Child to Parent**
+```jsx
+import React, { useState } from "react";
+import ChildComponent from "./ChildComponent";
+
+function ParentComponent() {
+  const [childData, setChildData] = useState("");
+
+  const handleChildData = (data) => {
+    setChildData(data);
+  };
+
+  return (
+    <div>
+      <h1>Data from Child: {childData}</h1>
+      <ChildComponent sendDataToParent={handleChildData} />
+    </div>
+  );
+}
+
+export default ParentComponent;
+```
+---
+```jsx
+// ChildComponent.js
+import React from "react";
+
+function ChildComponent({ sendDataToParent }) {
+  return (
+    <button onClick={() => sendDataToParent("Hello from Child!")}>
+      Send Data to Parent
+    </button>
+  );
+}
+
+export default ChildComponent;
+```
+
+### **✅ Explanation:**
+- The `ParentComponent` passes the `handleChildData` function to the `ChildComponent`.
+- The child calls `sendDataToParent("Hello from Child!")`, passing the data to the parent.
+- The parent updates its state and displays the received message.
+
+---
+
+## **🔹 Passing Functions with Parameters**
+If a function requires parameters, we pass an **arrow function** to avoid immediate execution.
+
+### **✅ Example:**
+```jsx
+<button onClick={() => updateMessage("New Message")}>
+  Update Message
+</button>
+```
+
+---
+
+## **🔹 When to Use These Patterns?**
+✔️ **Lifting state up** (child needs to update parent).  
+✔️ **Handling events** (parent needs access to child interactions).  
+✔️ **Reusability** (pass common functions to multiple children).  
+
+By following these patterns, we ensure **better data flow and state management** in React applications. 🚀
