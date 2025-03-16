@@ -1,5 +1,5 @@
 import React from "react";
-import Parent from "./Parent";
+import UseTransition from "./UseTransition";
 
 function App() {
   return (
@@ -7,10 +7,10 @@ function App() {
       <h2>
         <i>App⚛️</i>
       </h2>
-      <Parent />
+     <UseTransition/>
     </div>
   );
 }
-//v-41
+//v-43
 
 export default App;
