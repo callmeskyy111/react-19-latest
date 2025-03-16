@@ -19,7 +19,7 @@ function UseTransition() {
       <h3>useTransition( ) - React1️⃣9️⃣</h3>
       {pending ? <h1>LOADING... ⌛</h1> : null}
       <button disabled={pending} onClick={handleSubmit}>
-        {pending ? "Submitting.." : "Submit"}
+        {pending ? "Submitting..." : "Submit"}
       </button>
     </div>
   );
