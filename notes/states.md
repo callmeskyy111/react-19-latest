@@ -1078,3 +1078,152 @@ export default SelectBox;
 | **Checkboxes** | Array (`[]`) | Multiple selections, stores values in an array |
 | **Select Dropdown** | Single value (`string`) | One option at a time (`value` in `<select>`) |
 
+### **📌 Understanding Array & Object State Manipulation in React**
+State manipulation in React, especially for arrays and objects, requires **immutability**. Since React’s `useState` does not perform a deep merge, we must manually update the state while ensuring we do **not mutate the original state**.
+
+---
+
+## **1️⃣ Object State Manipulation**
+Objects in React state should always be updated using the **spread operator (`...`)** or the **functional update pattern** to maintain immutability.
+
+### **🔹 Updating a Simple Object in State**
+Let's say we have a state object for a user:
+```jsx
+const [user, setUser] = useState({
+  name: "Skyy",
+  age: 29,
+  location: "Kolkata",
+});
+```
+
+#### ✅ **Updating a Single Property**
+We use the **spread operator (`...user`)** to copy existing properties while modifying only the required field.
+
+```jsx
+setUser((prevUser) => ({
+  ...prevUser,
+  age: 30, // Updating only the 'age' property
+}));
+```
+
+#### ✅ **Updating via Input Field (Generic Approach)**
+```jsx
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setUser((prevUser) => ({
+    ...prevUser,
+    [name]: value, // Dynamic property update
+  }));
+};
+```
+```jsx
+<input type="text" name="name" value={user.name} onChange={handleChange} />
+<input type="number" name="age" value={user.age} onChange={handleChange} />
+```
+---
+
+### **🔹 Updating Nested Objects**
+If a state contains a nested object, React does **not** deeply merge it. You must manually update each nested level.
+
+```jsx
+const [user, setUser] = useState({
+  name: "Skyy",
+  address: { city: "Kolkata", country: "India" },
+});
+```
+
+#### ✅ **Updating Nested State (Correct Way)**
+```jsx
+setUser((prevUser) => ({
+  ...prevUser,
+  address: { ...prevUser.address, city: "Delhi" }, // Preserve `country`
+}));
+```
+
+#### ❌ **Mutating State (Incorrect)**
+```jsx
+user.address.city = "Delhi"; // ❌ This mutates the original object.
+setUser(user); // ❌ React might not detect this change.
+```
+---
+
+## **2️⃣ Array State Manipulation**
+Arrays should also be updated **immutably**, using methods like `.map()`, `.filter()`, `.concat()`, and the spread operator (`[...]`).
+
+### **🔹 Adding an Item to an Array**
+```jsx
+const [skills, setSkills] = useState(["React", "JavaScript"]);
+
+// ✅ Correct way (Immutable)
+setSkills((prevSkills) => [...prevSkills, "Node.js"]);
+```
+
+### **🔹 Removing an Item from an Array**
+```jsx
+setSkills((prevSkills) => prevSkills.filter((skill) => skill !== "JavaScript"));
+```
+
+### **🔹 Updating an Item in an Array**
+Using `.map()` to update a specific element.
+```jsx
+setSkills((prevSkills) =>
+  prevSkills.map((skill) => (skill === "React" ? "Next.js" : skill))
+);
+```
+
+### **🔹 Updating an Object Inside an Array**
+Example: Updating an object inside an array of users.
+```jsx
+const [users, setUsers] = useState([
+  { id: 1, name: "Skyy", age: 29 },
+  { id: 2, name: "Alice", age: 25 },
+]);
+
+setUsers((prevUsers) =>
+  prevUsers.map((user) =>
+    user.id === 1 ? { ...user, age: 30 } : user
+  )
+);
+```
+
+---
+
+## **3️⃣ Handling Complex State Updates**
+For deeply nested state structures, **useReducer** is often a better choice than `useState`.
+
+Example: **Managing a complex form with nested objects and arrays**
+```jsx
+const [profile, setProfile] = useState({
+  name: "Skyy",
+  details: {
+    age: 29,
+    address: {
+      city: "Kolkata",
+      country: "India",
+    },
+  },
+  skills: ["React", "Node.js"],
+});
+```
+
+### **🔹 Updating Nested Properties & Arrays Dynamically**
+```jsx
+const updateProfile = (key, value) => {
+  setProfile((prevProfile) => ({
+    ...prevProfile,
+    details: { ...prevProfile.details, [key]: value },
+  }));
+};
+
+updateProfile("age", 30);
+```
+
+---
+
+## **⚡ Key Takeaways**
+1. **Never mutate state directly**. Always use spread operators (`...`) or immutable methods (`map()`, `filter()`, etc.).
+2. **For objects**, always spread existing properties before updating.
+3. **For arrays**, use `.map()` for updates, `.filter()` for removals, and `[...arr, newItem]` for additions.
+4. **For deeply nested objects**, manually update each level or consider `useReducer`.
+
+---

@@ -1,17 +1,16 @@
 import React from "react";
-import ArrayState from "./ArrayState";
+import ParentCtxt from "./context/ParentCtxt";
 
 function App() {
-  
   return (
     <div>
       <h2>
         <i>App⚛️</i>
       </h2>
-      <ArrayState />
+      <ParentCtxt />
     </div>
   );
 }
-//v-47
+//v-49
 
 export default App;
