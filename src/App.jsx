@@ -1,16 +1,17 @@
 import React from "react";
-import UseTransition from "./UseTransition";
+import ArrayState from "./ArrayState";
 
 function App() {
+  
   return (
     <div>
       <h2>
         <i>App⚛️</i>
       </h2>
-     <UseTransition/>
+      <ArrayState />
     </div>
   );
 }
-//v-43
+//v-47
 
 export default App;
