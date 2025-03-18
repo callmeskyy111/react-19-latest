@@ -618,3 +618,184 @@ function useFilteredList(list, query) {
 - **Theme Management:** `useTheme()`  
 
 ---
+Here’s a list of **interview questions on custom hooks in React** with detailed answers:  
+
+---
+
+### ✅ **1. What are custom hooks in React? Why do we need them?**  
+**Answer:**  
+- **Custom hooks** are JavaScript functions that start with `use` and allow you to **reuse stateful logic** across components.  
+- They provide a way to extract logic from components, making the code cleaner and more maintainable.  
+- Unlike components, they **don’t return JSX**. They return data, state, or functions.  
+- They reduce **code duplication** and improve reusability.  
+
+**Example:**  
+```jsx
+function useCounter(initialValue = 0) {
+  const [count, setCount] = React.useState(initialValue);
+
+  const increment = () => setCount(count + 1);
+  const decrement = () => setCount(count - 1);
+
+  return { count, increment, decrement };
+}
+```
+---
+
+### ✅ **2. Why should custom hooks start with `use`?**  
+**Answer:**  
+- React enforces a naming convention where hooks should start with `use` (e.g., `useState`, `useEffect`).  
+- This allows **React’s linter** (ESLint) to identify and apply the **Rules of Hooks** for proper hook usage.  
+- It also helps developers easily recognize the purpose of a function.  
+
+---
+
+### ✅ **3. How do you create a custom hook that handles API calls using `useFetch()`?**  
+**Answer:**  
+Here’s how you can build a reusable `useFetch` hook:  
+```jsx
+import { useState, useEffect } from "react";
+
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Network error");
+        }
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [url]);
+
+  return { data, loading, error };
+}
+```
+**Usage:**  
+```jsx
+const { data, loading, error } = useFetch("https://jsonplaceholder.typicode.com/posts");
+```
+
+---
+
+### ✅ **4. Can custom hooks return JSX? Why or why not?**  
+**Answer:**  
+- **No, custom hooks** cannot return JSX because they are not components.  
+- Custom hooks are meant to encapsulate logic, handle state, or manage side effects, while components are responsible for rendering UI.  
+- If you need reusable UI, consider using a **component** instead.  
+
+---
+
+### ✅ **5. How can you pass parameters to a custom hook?**  
+**Answer:**  
+- You can pass parameters by simply accepting them as function arguments in the custom hook.  
+- For example:  
+```jsx
+function useCounter(initialValue = 0, step = 1) {
+  const [count, setCount] = React.useState(initialValue);
+  const increment = () => setCount(count + step);
+  return { count, increment };
+}
+
+const { count, increment } = useCounter(10, 2);
+```
+
+---
+
+### ✅ **6. How do you handle side effects inside a custom hook?**  
+**Answer:**  
+- You can use `useEffect` within a custom hook to handle side effects like API calls, event listeners, or subscriptions.  
+- Always clean up side effects using the cleanup function.  
+**Example:**  
+```jsx
+function useDocumentTitle(title) {
+  useEffect(() => {
+    document.title = title;
+    return () => {
+      document.title = "React App"; // Cleanup
+    };
+  }, [title]);
+}
+useDocumentTitle("Welcome to Skyy's App");
+```
+
+---
+
+### ✅ **7. How do you test a custom hook?**  
+**Answer:**  
+- You can test custom hooks using libraries like `@testing-library/react-hooks`.  
+- Example test for `useCounter`:  
+```jsx
+import { renderHook, act } from '@testing-library/react-hooks';
+import useCounter from './useCounter';
+
+test('should increment counter', () => {
+  const { result } = renderHook(() => useCounter(0));
+  
+  act(() => result.current.increment());
+  
+  expect(result.current.count).toBe(1);
+});
+```
+
+---
+
+### ✅ **8. Can a custom hook use another hook inside it?**  
+**Answer:**  
+- Yes, custom hooks can use other built-in hooks like `useState`, `useEffect`, or even other custom hooks.  
+- Example using multiple hooks inside one custom hook:  
+```jsx
+function useUserData(userId) {
+  const { data, loading } = useFetch(`/api/user/${userId}`);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (data?.role === 'admin') setIsAdmin(true);
+  }, [data]);
+
+  return { data, loading, isAdmin };
+}
+```
+
+---
+
+### ✅ **9. How can you optimize a custom hook using `useMemo` or `useCallback`?**  
+**Answer:**  
+- **useMemo** is used to optimize the return values of a hook.  
+- **useCallback** is used to memoize functions to prevent unnecessary re-creations.  
+**Example:**  
+```jsx
+function useFilteredList(list, query) {
+  const filteredList = React.useMemo(() => {
+    return list.filter((item) => item.includes(query));
+  }, [list, query]);
+
+  return filteredList;
+}
+```
+
+---
+
+### ✅ **10. What are some real-world use cases for custom hooks?**  
+**Answer:**  
+- **API Calls:** `useFetch()`, `useAxios()`  
+- **Form Management:** `useForm()`  
+- **Authentication:** `useAuth()`  
+- **Debouncing:** `useDebounce()`  
+- **LocalStorage Management:** `useLocalStorage()`  
+- **Responsive Design:** `useWindowSize()`  
+- **Event Listeners:** `useEventListener()`  
+- **Theme Management:** `useTheme()`  
+
+---
