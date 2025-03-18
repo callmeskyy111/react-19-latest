@@ -1,4 +1,3 @@
-import { createContext} from "react";
+import { createContext } from "react";
 
-
-export const SubjectCtxt = createContext('Maths')
+export const SubjectCtxt = createContext("Sociology/ default sub.");

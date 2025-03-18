@@ -1,5 +1,5 @@
 import React from "react";
-import ParentCtxt from "./context/ParentCtxt";
+import CustomHooks from "./custom-hooks/CustomHooks";
 
 function App() {
   return (
@@ -7,10 +7,10 @@ function App() {
       <h2>
         <i>App⚛️</i>
       </h2>
-      <ParentCtxt />
+      <CustomHooks />
     </div>
   );
 }
-//v-49
+//vid-53
 
 export default App;
